@@ -125,6 +125,18 @@ def generate_graph_seq2seq_io_data_with_time(df, batch_size, seq_len, horizon, n
     x, y, both are 5-D tensors with size (epoch_size, batch_size, seq_len, num_sensors, input_dim).
     Adjacent batches are continuous sequence, i.e., x[i, j, :, :] is before x[i+1, j, :, :]
     """
+    """
+    original:
+    reshape long sequences [t1,t2,...] into [ [t1,t2,t3], [t4,t5,t6] ]
+    each batch has data sampled at fixed lags. e.g, [[t1,t2], [t4,t5]], [[t2,t3],[t5,t6]]
+    each epoch iterates over batch increasingly.
+    
+    target:
+    reshape long sequences [t1,t2,...] into [ [t1,t3,t5], [t2,t4,t6] ]
+    each batch has data sampled increasingly. e.g, [[t1,t2], [t3,t4]], [[t3,t5],[t4,t6]]
+    each epoch iterates over batch increasingly.
+    
+    """
     if scaler:
         df = scaler.transform(df)
     num_samples, _ = df.shape
